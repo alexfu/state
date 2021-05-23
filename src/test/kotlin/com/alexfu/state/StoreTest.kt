@@ -1,43 +1,38 @@
 package com.alexfu.state
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import app.cash.turbine.test
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import strikt.api.expectThat
-import strikt.assertions.containsExactly
+import strikt.assertions.isEqualTo
+import kotlin.time.ExperimentalTime
 
-@ExperimentalCoroutinesApi
+@ExperimentalTime
 class StoreTest {
     @Test
     @DisplayName("Emits initial state")
     fun emitsInitialState() {
-        runBlockingTest {
-            val store = Store("Hello")
-
-            val output = mutableListOf<String>()
-            store.observeState().take(1).toList(output)
-
-            expectThat(output).containsExactly("Hello")
+        runBlocking {
+            val store = Store(0)
+            store.observeState().test {
+                expectThat(expectItem()).isEqualTo(0)
+                cancel()
+            }
         }
     }
 
     @Test
     @DisplayName("Updates state")
     fun updatesState() {
-        runBlockingTest {
+        runBlocking {
             val store = Store(1)
-            val output = mutableListOf<Int>()
-            launch {
-                store.observeState().take(2).toList(output)
+            store.observeState().test {
+                store.updateState { oldState -> oldState + 1 }
+                expectThat(expectItem()).isEqualTo(1)
+                expectThat(expectItem()).isEqualTo(2)
+                cancel()
             }
-
-            store.updateState { oldState -> oldState + 1 }
-
-            expectThat(output).containsExactly(1, 2)
         }
     }
 }
