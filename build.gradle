@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.32'
+    id("org.jetbrains.kotlin.jvm").version("1.5.0")
     id("maven-publish")
 }
 
@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0"
     testImplementation "org.junit.jupiter:junit-jupiter"
     testImplementation("io.strikt:strikt-jvm")
     testImplementation(platform("io.strikt:strikt-bom:0.31.0"))
