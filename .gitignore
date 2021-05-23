@@ -1,0 +1,7 @@
+build
+.gradle
+.idea/jarRepositories.xml
+.idea/libraries-with-intellij-classes.xml
+.idea/misc.xml
+.idea/vcs.xml
+.idea/workspace.xml
