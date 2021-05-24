@@ -5,7 +5,7 @@ import com.alexfu.state.Store
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class LoadableStore<T : Any>(initialState: LoadState<T>) : Store<LoadState<T>>(initialState) {
+open class LoadableStore<T : Any>(initialState: LoadState<T>) : Store<LoadState<T>>(initialState) {
     constructor(initialState: T) : this(LoadState.None(initialState))
 
     fun observeValue(): Flow<T> {
