@@ -21,4 +21,13 @@ sealed class LoadState<T>(open val value: T) {
     fun error(error: Throwable): LoadState<T> {
         return Error(value, error)
     }
+
+    fun withNewValue(newValue: T): LoadState<T> {
+        return when (this) {
+            is Error -> copy(newValue, error)
+            is Loading -> copy(newValue)
+            is None -> copy(newValue)
+            is Success -> copy(newValue)
+        }
+    }
 }
