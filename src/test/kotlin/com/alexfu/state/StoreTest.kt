@@ -2,7 +2,6 @@ package com.alexfu.state
 
 import app.cash.turbine.test
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
@@ -11,8 +10,7 @@ import kotlin.time.ExperimentalTime
 @ExperimentalTime
 class StoreTest {
     @Test
-    @DisplayName("Emits initial state")
-    fun emitsInitialState() {
+    fun `observeState emits initial state`() {
         runBlocking {
             val store = Store(0)
             store.observeState().test {
@@ -23,8 +21,7 @@ class StoreTest {
     }
 
     @Test
-    @DisplayName("Updates state")
-    fun updatesState() {
+    fun `updateState updates state correctly`() {
         runBlocking {
             val store = Store(1)
             store.observeState().test {
