@@ -1,4 +1,12 @@
 
+<a name="v0.1.0"></a>
+## [v0.1.0](https://github.com/alexfu/state/compare/v0.0.4...v0.1.0) (2023-02-25)
+
+### Refactor
+
+* Switch LoadState to be a sealed class.
+
+
 <a name="v0.0.4"></a>
 ## [v0.0.4](https://github.com/alexfu/state/compare/v0.0.3...v0.0.4) (2021-05-24)
 
