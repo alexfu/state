@@ -1,7 +1,7 @@
 package com.alexfu.state
 
-import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -11,7 +11,7 @@ typealias Action<T> = (T) -> T
 open class Store<T : Any>(initialState: T) {
     private val stateFlow = MutableStateFlow(initialState)
     private val stateProcessor = Channel<Action<T>>()
-    private val scope = CoroutineScope(CoroutineName("StoreCoroutine"))
+    private val scope = CoroutineScope(Dispatchers.Default)
 
     val state: T
         get() = stateFlow.value
@@ -28,7 +28,6 @@ open class Store<T : Any>(initialState: T) {
 
     fun observeState(): Flow<T> {
         return stateFlow
-            .stateIn(scope = scope, started = SharingStarted.Eagerly, initialValue = state)
     }
 
     fun updateState(action: Action<T>) {
