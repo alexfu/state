@@ -26,8 +26,9 @@ open class Store<T : Any>(initialState: T) {
         }
     }
 
-    fun observeState(): SharedFlow<T> {
-        return stateFlow.asStateFlow()
+    fun observeState(): Flow<T> {
+        return stateFlow
+            .stateIn(scope = scope, started = SharingStarted.Eagerly, initialValue = state)
     }
 
     fun updateState(action: Action<T>) {

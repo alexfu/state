@@ -25,8 +25,8 @@ class StoreTest {
         runBlocking {
             val store = Store(1)
             store.observeState().test {
-                store.updateState { oldState -> oldState + 1 }
                 expectThat(expectItem()).isEqualTo(1)
+                store.updateState { oldState -> oldState + 1 }
                 expectThat(expectItem()).isEqualTo(2)
                 cancel()
             }
