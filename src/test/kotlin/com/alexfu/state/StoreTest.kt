@@ -1,7 +1,10 @@
 package com.alexfu.state
 
 import app.cash.turbine.test
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.TestCoroutineScheduler
 import org.junit.jupiter.api.Test
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
@@ -30,6 +33,34 @@ class StoreTest {
                 expectThat(expectItem()).isEqualTo(2)
                 cancel()
             }
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    @Test
+    fun `updateState when multiple threads update state it updates state in correct order`() {
+        runBlocking {
+            val store = Store(initialState = "")
+            store.observeState()
+                .test {
+                    expectThat(expectItem()).isEqualTo("")
+
+                    GlobalScope.launch {
+                        store.updateState {
+                            Thread.sleep(500)
+                            "A"
+                        }
+                    }
+
+                    GlobalScope.launch {
+                        delay(50)
+                        store.updateState { "B" }
+                    }
+
+                    expectThat(expectItem()).isEqualTo("A")
+                    expectThat(expectItem()).isEqualTo("B")
+                    cancel()
+                }
         }
     }
 }
