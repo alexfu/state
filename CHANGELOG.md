@@ -1,4 +1,12 @@
 
+<a name="v0.1.3"></a>
+## [v0.1.3](https://github.com/alexfu/state/compare/v0.1.2...v0.1.3) (2023-04-08)
+
+### Fix
+
+* Make updateState thread safe.
+
+
 <a name="v0.1.2"></a>
 ## [v0.1.2](https://github.com/alexfu/state/compare/v0.1.1...v0.1.2) (2023-02-25)
 
