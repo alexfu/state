@@ -1,2 +1,3 @@
 rootProject.name = 'state'
+include 'processor'
 
