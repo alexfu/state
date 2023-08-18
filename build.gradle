@@ -21,12 +21,18 @@ allprojects {
                     name = "GitHubPackages"
                     url = uri("https://maven.pkg.github.com/alexfu/state")
                     credentials {
-                        def publishingProps = new Properties()
-                        rootProject.file("publishing.properties").withReader {
-                            publishingProps.load(it)
+                        def env = System.getenv()
+                        if (env.containsKey("CI") && env.get("CI") == "true") {
+                            username = env.get("PUBLISHING_USERNAME")
+                            password = env.get("PUBLISHING_PASSWORD")
+                        } else {
+                            def publishingProps = new Properties()
+                            rootProject.file("publishing.properties").withReader {
+                                publishingProps.load(it)
+                            }
+                            username = publishingProps.getProperty("user")
+                            password = publishingProps.getProperty("password")
                         }
-                        username = publishingProps.getProperty("user")
-                        password = publishingProps.getProperty("password")
                     }
                 }
             }
