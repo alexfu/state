@@ -1,6 +1,15 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm").version("1.9.0")
+    id("com.adarshr.test-logger").version("3.2.0").apply(false)
     id("maven-publish")
+    id("org.jetbrains.kotlin.jvm").version("1.9.0")
+}
+
+allprojects {
+    plugins.apply("com.adarshr.test-logger")
+
+    testlogger {
+        theme 'mocha'
+    }
 }
 
 group 'com.alexfu.state'
