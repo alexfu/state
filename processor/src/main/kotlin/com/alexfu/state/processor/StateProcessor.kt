@@ -1,6 +1,7 @@
 package com.alexfu.state.processor
 
 import com.alexfu.state.State
+import com.google.devtools.ksp.getDeclaredFunctions
 import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
@@ -29,7 +30,7 @@ class StateProcessor(private val codegen: CodeGenerator, private val logger: KSP
 
             val validatedSymbols = allSymbols
                 .filter { symbol ->
-                    val isValid = symbol.validate()
+                    val isValid = validate(symbol)
                     if (!isValid) {
                         unresolvedSymbols.add(symbol)
                     }
@@ -43,6 +44,25 @@ class StateProcessor(private val codegen: CodeGenerator, private val logger: KSP
             }
         }
         return unresolvedSymbols
+    }
+
+    private fun validate(symbol: KSAnnotated): Boolean {
+        if (!symbol.validate()) {
+            return false
+        }
+
+        if (symbol !is KSClassDeclaration) {
+            return false
+        }
+
+        // Ensure this class has a built-in copy function & not one that is
+        // declared manually.
+        val functions = symbol.getAllFunctions() - symbol.getDeclaredFunctions().toSet()
+        val hasCopyFunction = functions.firstOrNull { it.simpleName.asString() == "copy" } != null
+        if (!hasCopyFunction) {
+            logger.warn("Skipping processing for ${symbol.simpleName.asString()}. @State annotation is only valid on data classes!")
+        }
+        return hasCopyFunction
     }
 }
 
