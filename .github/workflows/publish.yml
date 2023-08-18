@@ -1,0 +1,15 @@
+name: Publish
+on:
+  push:
+    tags:
+      - *
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      PUBLISHING_USERNAME: ${{ secrets.PUBLISHING_USERNAME }}
+      PUBLISHING_PASSWORD: ${{ secrets.PUBLISHING_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v3
+      - run: ./gradlew publishGprPublicationToGitHubPackagesRepository
