@@ -18,9 +18,35 @@ class StateProcessorTest {
             import com.alexfu.state.State
 
             @State
-            data class TestState(
-                val name: String
+            data class TestState(val name: String)
+        """.trimIndent())
+
+        val file = compile(source)
+
+        expectThat(file)
+            .isNotNull()
+            .contentEquals(
+                """
+                import com.alexfu.state.Action
+                import kotlin.String
+
+                public object TestStateActions {
+                  public fun setName(name: String): Action<TestState> = { it.copy(name = name) }
+                }
+                """.trimIndent()
             )
+    }
+
+    @Test
+    fun `when source has extension properties it does not process extension properties`() {
+        val source = SourceFile.kotlin("TestState.kt", """
+            import com.alexfu.state.State
+
+            @State
+            data class TestState(val name: String)
+            
+            val TestState.aliasedName: String
+              get() = name
         """.trimIndent())
 
         val file = compile(source)
