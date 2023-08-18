@@ -8,6 +8,7 @@ repositories {
 
 dependencies {
     implementation("com.google.devtools.ksp:symbol-processing-api:1.9.0-1.0.11")
+    implementation(project(":"))
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
