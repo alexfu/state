@@ -2,9 +2,6 @@ package com.alexfu.state
 
 import app.cash.turbine.test
 import kotlinx.coroutines.*
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineScheduler
 import org.junit.jupiter.api.Test
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
