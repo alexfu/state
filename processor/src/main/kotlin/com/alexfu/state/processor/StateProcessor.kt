@@ -1,16 +1,11 @@
 package com.alexfu.state.processor
 
 import com.alexfu.state.State
+import com.google.devtools.ksp.containingFile
 import com.google.devtools.ksp.getDeclaredFunctions
 import com.google.devtools.ksp.getDeclaredProperties
-import com.google.devtools.ksp.processing.CodeGenerator
-import com.google.devtools.ksp.processing.KSPLogger
-import com.google.devtools.ksp.processing.Resolver
-import com.google.devtools.ksp.processing.SymbolProcessor
-import com.google.devtools.ksp.symbol.KSAnnotated
-import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSPropertyDeclaration
-import com.google.devtools.ksp.symbol.KSVisitorVoid
+import com.google.devtools.ksp.processing.*
+import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -40,7 +35,7 @@ class StateProcessor(private val codegen: CodeGenerator, private val logger: KSP
 
             validatedSymbols.forEach { symbol ->
                 logger.info("Processing $symbol.")
-                symbol.accept(StateVisitor(codegen), Unit)
+                symbol.accept(StateVisitor(codegen = codegen, originatingFile = symbol.containingFile), Unit)
             }
         }
         return unresolvedSymbols
@@ -66,12 +61,18 @@ class StateProcessor(private val codegen: CodeGenerator, private val logger: KSP
     }
 }
 
-private class StateVisitor(private val codegen: CodeGenerator) : KSVisitorVoid() {
+private class StateVisitor(private val codegen: CodeGenerator, private val originatingFile: KSFile?) : KSVisitorVoid() {
     override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
         val className = classDeclaration.toClassName()
         val declaredProps = classDeclaration.getDeclaredProperties().toList()
         val file = StateActionsCodeGenerator(className, declaredProps).generate()
-        file.writeTo(codegen, false)
+        file.writeTo(
+            codeGenerator = codegen,
+            dependencies = Dependencies(
+                aggregating = false,
+                sources = originatingFile?.let { arrayOf(it) }.orEmpty()
+            )
+        )
     }
 }
 
