@@ -1,4 +1,12 @@
 
+<a name="0.2.1"></a>
+## [0.2.1](https://github.com/alexfu/state/compare/0.2.0...0.2.1) (2023-08-20)
+
+### Bug Fixes
+
+* Specify file dependencies in StateProcessor.
+
+
 <a name="0.2.0"></a>
 ## [0.2.0](https://github.com/alexfu/state/compare/v0.1.3...0.2.0) (2023-08-18)
 
