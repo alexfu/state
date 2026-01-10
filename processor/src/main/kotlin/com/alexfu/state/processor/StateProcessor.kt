@@ -2,17 +2,29 @@ package com.alexfu.state.processor
 
 import com.alexfu.state.State
 import com.google.devtools.ksp.containingFile
-import com.google.devtools.ksp.getDeclaredFunctions
 import com.google.devtools.ksp.getDeclaredProperties
-import com.google.devtools.ksp.processing.*
-import com.google.devtools.ksp.symbol.*
+import com.google.devtools.ksp.processing.CodeGenerator
+import com.google.devtools.ksp.processing.Dependencies
+import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
+import com.google.devtools.ksp.processing.SymbolProcessor
+import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSFile
+import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import com.google.devtools.ksp.symbol.KSVisitorVoid
+import com.google.devtools.ksp.symbol.Modifier
 import com.google.devtools.ksp.validate
-import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.writeTo
-import java.util.*
+import java.util.Locale
 
 class StateProcessor(private val codegen: CodeGenerator, private val logger: KSPLogger) : SymbolProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
@@ -50,14 +62,12 @@ class StateProcessor(private val codegen: CodeGenerator, private val logger: KSP
             return false
         }
 
-        // Ensure this class has a built-in copy function & not one that is
-        // declared manually.
-        val functions = symbol.getAllFunctions() - symbol.getDeclaredFunctions().toSet()
-        val hasCopyFunction = functions.firstOrNull { it.simpleName.asString() == "copy" } != null
-        if (!hasCopyFunction) {
+        // Ensure this class is a data class
+        val isDataClass = symbol.isDataClass()
+        if (!isDataClass) {
             logger.warn("Skipping processing for ${symbol.simpleName.asString()}. @State annotation is only valid on data classes!")
         }
-        return hasCopyFunction
+        return isDataClass
     }
 }
 
@@ -107,4 +117,8 @@ private class StateActionsCodeGenerator(private val className: ClassName, privat
     private fun capitalize(str: String): String {
         return str.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
     }
+}
+
+fun KSAnnotated.isDataClass(): Boolean {
+    return (this as? KSClassDeclaration)?.modifiers?.contains(Modifier.DATA) == true
 }
