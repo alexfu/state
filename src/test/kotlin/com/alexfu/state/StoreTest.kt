@@ -1,7 +1,11 @@
 package com.alexfu.state
 
 import app.cash.turbine.test
-import kotlinx.coroutines.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
@@ -14,7 +18,7 @@ class StoreTest {
         runBlocking {
             val store = Store(0)
             store.observeState().test {
-                expectThat(expectItem()).isEqualTo(0)
+                expectThat(awaitItem()).isEqualTo(0)
                 cancel()
             }
         }
@@ -25,9 +29,9 @@ class StoreTest {
         runBlocking {
             val store = Store(1)
             store.observeState().test {
-                expectThat(expectItem()).isEqualTo(1)
+                expectThat(awaitItem()).isEqualTo(1)
                 store.updateState { oldState -> oldState + 1 }
-                expectThat(expectItem()).isEqualTo(2)
+                expectThat(awaitItem()).isEqualTo(2)
                 cancel()
             }
         }
@@ -40,7 +44,7 @@ class StoreTest {
             val store = Store(initialState = "")
             store.observeState()
                 .test {
-                    expectThat(expectItem()).isEqualTo("")
+                    expectThat(awaitItem()).isEqualTo("")
 
                     GlobalScope.launch {
                         store.updateState {
@@ -54,8 +58,8 @@ class StoreTest {
                         store.updateState { "B" }
                     }
 
-                    expectThat(expectItem()).isEqualTo("A")
-                    expectThat(expectItem()).isEqualTo("B")
+                    expectThat(awaitItem()).isEqualTo("A")
+                    expectThat(awaitItem()).isEqualTo("B")
                     cancel()
                 }
         }

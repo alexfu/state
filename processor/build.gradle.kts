@@ -7,7 +7,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.0-1.0.11")
+    implementation("com.google.devtools.ksp:symbol-processing-api:2.2.20-2.0.4")
     implementation("com.squareup:kotlinpoet-ksp:1.14.2")
     implementation(project(":"))
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
