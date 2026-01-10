@@ -1,4 +1,12 @@
 
+<a name="0.3.1"></a>
+## [0.3.1](https://github.com/alexfu/state/compare/0.3.0...0.3.1) (2026-01-10)
+
+### Bug Fixes
+
+* data class eval
+
+
 <a name="0.3.0"></a>
 ## [0.3.0](https://github.com/alexfu/state/compare/0.2.1...0.3.0) (2026-01-10)
 
