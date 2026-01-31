@@ -1,4 +1,12 @@
 
+<a name="0.3.2"></a>
+## [0.3.2](https://github.com/alexfu/state/compare/0.3.1...0.3.2) (2026-01-31)
+
+### Features
+
+* Return StateFlow from observeState
+
+
 <a name="0.3.1"></a>
 ## [0.3.1](https://github.com/alexfu/state/compare/0.3.0...0.3.1) (2026-01-10)
 
